@@ -1,4 +1,5 @@
 import os
+import random
 
 from loguru import logger
 from psychopy import visual
@@ -74,21 +75,18 @@ class SSVEP:
         self.frames_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'pythonProject1')
         self.cur_step_func = self.initial_game
         self.finish_experiment_flag = False
-        self.chess_color = 'black'
         self.distance = 170
         self.fre_control5 = StimulationControl()
         self.red = 3
         self.black = 4
         self.fre_control40 = StimulationControl()
         self.fre_opa = Frequence()
-        self.chess_map = []
+        self.card = []
         self.combat_mode = None
         self.command = False
         self.state_flag = None
         self.selected_flag = None
         self.mode_pos = None
-        self.selected_piece_row = None
-        self.selected_piece_line = None
 
     def run(self):  # 游戏开始
         logger.info('刺激范式开始运行')
@@ -121,70 +119,39 @@ class SSVEP:
 
         init_txt.draw()
         self.window.flip()  # 界面翻转替换
-        self.cur_step_func = self.gmae_drawing
+        self.cur_step_func = self.game_drawing
 
     def game_drawing(self):
-        self.command = False
-        background = os.path.join(self.frames_file_path,'res', 'background.png')
 
-        pic1 = visual.ImageStim(self.window, background, anchor='center', units='pix')
-
-        display_mode_selection_txt1 = visual.TextStim(win=self.window, text='打牌', height=27, color='#FFFFFF',
-                                                      pos=(-300, -650), units='pix', bold=True, )
-        display_mode_selection_txt2 = visual.TextStim(win=self.window, text='摸牌', height=120, color='#FFFFFF',
-                                                      pos=(-500, -650), units='pix', bold=True, )
-        display_mode_selection_txt3 = visual.TextStim(win=self.window, text='胡牌', height=120, color='#FFFFFF',
-                                                      pos=(-700, -650), units='pix', bold=True, )
-        display_mode_selection_txt4 = visual.TextStim(win=self.window, text='碰牌', height=120, color='#FFFFFF',
-                                                      pos=(-900, -650), units='pix', bold=True, )
-        rect1 = visual.Rect(win=self.window, units="pix", width=600, height=180, lineWidth=4,
-                            interpolate='True',  # 消除锯齿
-                            fillColor='#000000', lineColor='#808080', pos=(-300, -650), )
-        rect2 = visual.Rect(win=self.window, units="pix", width=70, height=30, lineWidth=4,
-                            interpolate='True',  # 消除锯齿
-                            fillColor='#000000', lineColor='#808080', pos=(-500, -650), )
-        rect3 = visual.Rect(win=self.window, units="pix", width=70, height=30, lineWidth=4,
-                            interpolate='True',  # 消除锯齿
-                            fillColor='#000000', lineColor='#808080', pos=(-700, -650), )
-        rect4 = visual.Rect(win=self.window, units="pix", width=70, height=30, lineWidth=4,
-                            interpolate='True',  # 消除锯齿
-                            fillColor='#000000', lineColor='#808080', pos=(-900, -650), )
-
-
-        while not self.command:
-            rect1.opacity = 0.5
-            rect2.opacity = 0.5
-            rect3.opacity = 0.5
-            rect4.opacity = 0.5
-
-            pic1.draw()
-
-            rect1.draw()
-            rect2.draw()
-            rect3.draw()
-            rect4.draw()
-
-            display_mode_selection_txt1.draw()
-            display_mode_selection_txt2.draw()
-            display_mode_selection_txt3.draw()
-            display_mode_selection_txt4.draw()
-
-            self.red = 3
-            self.black = 4
-            self.maj_create()
-            self.action_create()
-            #如果牌已经被选择
-            if self.selected_flag == 1:
-                self.cur_step_func = self.select_one()
-
-
-
-    def select_one(self):
-        self.command = False
         background = os.path.join(self.frames_file_path, 'res', 'background.png')
-
         pic1 = visual.ImageStim(self.window, background, anchor='center', units='pix')
+        pic1.draw()
+        self.maj_create()
+        self.action_create()
 
+    def game_then(self):
+        background = os.path.join(self.frames_file_path, 'res', 'background.png')
+        pic1 = visual.ImageStim(self.window, background, anchor='center', units='pix')
+        pic1.draw()
+        self.maj_create()
+        self.action_create()
+
+    def game_next(self):
+        background = os.path.join(self.frames_file_path, 'res', 'background.png')
+        pic1 = visual.ImageStim(self.window, background, anchor='center', units='pix')
+        pic1.draw()
+        self.maj_create()
+        self.action_create()
+
+
+    def select_one(self,x):
+        piece_n = '{}.png'.format(self.card[x])
+        piece_picture = os.path.join(self.frames_file_path, 'nan', piece_n)
+        piece = visual.ImageStim(self.window, piece_picture, anchor='center', units='pix',
+                                 pos=(-1400 + 53 * x, 0))
+        piece.draw()
+
+    def action_create(self, ):
         display_mode_selection_txt1 = visual.TextStim(win=self.window, text='打牌', height=27, color='#FFFFFF',
                                                       pos=(-300, -650), units='pix', bold=True, )
         display_mode_selection_txt2 = visual.TextStim(win=self.window, text='摸牌', height=120, color='#FFFFFF',
@@ -205,45 +172,26 @@ class SSVEP:
         rect4 = visual.Rect(win=self.window, units="pix", width=70, height=30, lineWidth=4,
                             interpolate='True',  # 消除锯齿
                             fillColor='#000000', lineColor='#808080', pos=(-900, -650), )
+        rect1.opacity = 0.5
+        rect2.opacity = 0.5
+        rect3.opacity = 0.5
+        rect4.opacity = 0.5
 
-        while not self.command:
-            rect1.opacity = 0.5
-            rect2.opacity = 0.5
-            rect3.opacity = 0.5
-            rect4.opacity = 0.5
+        rect1.draw()
+        rect2.draw()
+        rect3.draw()
+        rect4.draw()
 
-            pic1.draw()
-
-            rect1.draw()
-            rect2.draw()
-            rect3.draw()
-            rect4.draw()
-
-            display_mode_selection_txt1.draw()
-            display_mode_selection_txt2.draw()
-            display_mode_selection_txt3.draw()
-            display_mode_selection_txt4.draw()
-
-            self.red = 3
-            self.black = 4
-            self.maj_create()
-            self.action_create()
-
-
-    def action_create(self):
-        for x in range(11, 13, 1):
-            piece_n = '{}.png'.format(x)
-            piece_picture = os.path.join(self.frames_file_path, 'nan', piece_n)
-            piece = visual.ImageStim(self.window, piece_picture, anchor='center', units='pix',
-                                     pos=(-1400 + 53 * x, 100))
-            piece.draw()
-
+        display_mode_selection_txt1.draw()
+        display_mode_selection_txt2.draw()
+        display_mode_selection_txt3.draw()
+        display_mode_selection_txt4.draw()
 
     def maj_create(self):
-        for x in range(11, 19, 1):
-            piece_n = '{}.png'.format(x)
+        for x in range(0, 12, 1):
+            piece_n = '{}.png'.format(self.card[x])
             piece_picture = os.path.join(self.frames_file_path, 'nan', piece_n)
             piece = visual.ImageStim(self.window, piece_picture, anchor='center', units='pix',
                                      pos=(-1400 + 53 * x, 0))
+            piece.opacity = random.randint(1, 10) / 10
             piece.draw()
-

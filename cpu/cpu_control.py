@@ -23,7 +23,12 @@ class ActionControl():
         self.consumer = KafkaConsumer('Algorithm2Stimulation', self.event_mng)
 
     def add_event_listener(self):
-        self.event_mng.add_event_listener('FDBK', self.__recv_result)
+        #接收六种消息格式 吃，摸牌，胡行为，信息打的牌的行为，选牌行为信息
+        self.event_mng.add_event_listener('ACGT', self.__recv_result_get)
+        self.event_mng.add_event_listener('ACSP', self.__recv_result_select)
+        self.event_mng.add_event_listener('ACOT', self.__recv_result_out)
+        self.event_mng.add_event_listener('ACPG', self.__recv_result_peng)
+        self.event_mng.add_event_listener('ACHU', self.__recv_result_hu)
 
     def start(self):
         self.add_event_listener()

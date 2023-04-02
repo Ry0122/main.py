@@ -40,11 +40,12 @@ display_mode_selection_txt1.draw()
 display_mode_selection_txt2.draw()
 display_mode_selection_txt3.draw()
 display_mode_selection_txt4.draw()
-for x in range(11, 19, 1):
-    piece_n = '{}.png'.format(x)
+a = [11,12,13,14,15,16,21,22,23,25,41,41,42]
+for x in range(0, 12, 1):
+    piece_n = '{}.png'.format(a[x])
     piece_picture = os.path.join(frames_file_path, 'nan',piece_n)
     piece = visual.ImageStim(window, piece_picture, anchor='center', units='pix',
-                             pos=(-1400 + 53 * x,  0 ))
+                             pos=(-700 + 53 * x,  0 ))
     piece.draw()
 
 window.flip()
